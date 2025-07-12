@@ -2,9 +2,6 @@ import { typedKeys } from "@/shared/utils/type";
 import * as yup from "yup";
 import { READ_STATUS } from "../config/read-status";
 
-const transformDate = (value: any) =>
-  value === "" || isNaN(new Date(value).getTime()) ? null : new Date(value);
-
 export const bookReviewSchema = yup.object({
   title: yup.string().required("도서 제목을 입력해주세요."),
   status: yup
@@ -12,11 +9,11 @@ export const bookReviewSchema = yup.object({
     .oneOf(typedKeys(READ_STATUS))
     .required("독서 상태를 선택해주세요."),
 
-  publishDate: yup.date().transform(transformDate).nullable().notRequired(),
+  publishDate: yup.date().required("출판일을 입력해주세요."),
 
   startDate: yup
     .date()
-    .transform(transformDate)
+
     .nullable()
     .min(yup.ref("publishDate"), "출판일 이후로 시작일을 설정해주세요.")
     .when("status", {
@@ -30,7 +27,6 @@ export const bookReviewSchema = yup.object({
 
   endDate: yup
     .date()
-    .transform(transformDate)
     .nullable()
     .when("status", {
       is: READ_STATUS.DONE.value,

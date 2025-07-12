@@ -44,6 +44,7 @@ const ReviewPage = () => {
       const isValid = await trigger([
         "title",
         "status",
+        "publishDate",
         "startDate",
         "endDate",
       ]);

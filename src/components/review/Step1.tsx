@@ -11,22 +11,22 @@ import { typedEntries } from "@/shared/utils/type";
 import { Card, MenuItem, Stack, Typography } from "@mui/material";
 
 const BookStep1 = () => {
-  const { control, getValues, setValue } =
+  const { control, getValues, setValue, clearErrors } =
     useFormContext<InferredBookReviewSchema>();
 
   /** 독서 상태에 따라 독서 기간을 초기화합니다. */
   const handleInitDateOnStatusChange = (status: string) => {
     console.log("handleInitDateOnStatusChange", status);
     if (status === READ_STATUS.TODO.value) {
-      setValue("startDate", undefined);
-      setValue("endDate", undefined);
+      setValue("startDate", null);
+      setValue("endDate", null);
       return;
     }
 
-    if (status === READ_STATUS.DONE.value) {
+    if (status === READ_STATUS.PROGRESS.value) {
       const endDate = getValues("endDate");
       if (endDate) {
-        setValue("endDate", undefined);
+        setValue("endDate", null);
       }
     }
   };
@@ -66,7 +66,11 @@ const BookStep1 = () => {
           <Typography variant={"body2"} sx={{ display: "flex", gap: 1 }}>
             {"도서 출판일"}
           </Typography>
-          <RHFDateTimePicker name="publishDate" label="도서 출판일" />
+          <RHFDateTimePicker
+            name="publishDate"
+            label="도서 출판일"
+            handleChange={() => clearErrors("publishDate")}
+          />
         </Stack>
         <Controller
           name="status"
@@ -81,8 +85,18 @@ const BookStep1 = () => {
                 </Typography>
 
                 <Stack direction="row" spacing={2}>
-                  <RHFDateTimePicker name="startDate" label="독서 시작일" />
-                  <RHFDateTimePicker name="endDate" label="독서 종료일" />
+                  <RHFDateTimePicker
+                    name="startDate"
+                    label="독서 시작일"
+                    handleChange={() => clearErrors("startDate")}
+                  />
+
+                  <RHFDateTimePicker
+                    disabled={field.value !== "DONE"}
+                    name="endDate"
+                    label="독서 종료일"
+                    handleChange={() => clearErrors("endDate")}
+                  />
                 </Stack>
               </Stack>
             );
