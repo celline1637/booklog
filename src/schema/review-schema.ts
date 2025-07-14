@@ -40,7 +40,7 @@ export const bookReviewSchema = yup.object({
   totalPageCount: yup
     .number()
     .min(1)
-    .required("전체 페이지 수를 입력해주세요."), // 내부적으로만 사용
+    .required("전체 페이지 수를 입력해주세요."),
 
   rating: yup.number().min(0).max(5).required("별점을 입력해주세요."),
 

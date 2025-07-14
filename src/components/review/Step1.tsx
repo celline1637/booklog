@@ -8,15 +8,15 @@ import { RHFDateTimePicker } from "@/shared/components/form/rhf-date-picker.clie
 import { RHFSelect } from "@/shared/components/form/rhf-select";
 import RHFTextField from "@/shared/components/form/rhf-text-field";
 import { typedEntries } from "@/shared/utils/type";
-import { Card, MenuItem, Stack, Typography } from "@mui/material";
+import type { ReadStatus } from "@/types/read-status";
+import { Card, Stack, Typography } from "@mui/material";
 
 const BookStep1 = () => {
   const { control, getValues, setValue, clearErrors } =
     useFormContext<InferredBookReviewSchema>();
 
   /** 독서 상태에 따라 독서 기간을 초기화합니다. */
-  const handleInitDateOnStatusChange = (status: string) => {
-    console.log("handleInitDateOnStatusChange", status);
+  const handleInitDateOnStatusChange = (status: ReadStatus) => {
     if (status === READ_STATUS.TODO.value) {
       setValue("startDate", null);
       setValue("endDate", null);
@@ -40,13 +40,13 @@ const BookStep1 = () => {
           </Typography>
           <RHFSelect
             name="status"
-            onChange={(e) => handleInitDateOnStatusChange(e.target.value)}
+            onChange={(e) =>
+              handleInitDateOnStatusChange(e.target.value as ReadStatus)
+            }
             fullWidth
           >
             {typedEntries(READ_STATUS).map(([key, { value, label }]) => (
-              <MenuItem key={key} value={value}>
-                {label}
-              </MenuItem>
+              <RHFSelect.Option key={key} value={value} label={label} />
             ))}
           </RHFSelect>
         </Stack>

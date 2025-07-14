@@ -1,18 +1,18 @@
 import { Controller, useFormContext } from "react-hook-form";
 
-import Box from "@mui/material/Box";
-import FormControl from "@mui/material/FormControl";
-import Chip, { type ChipProps } from "@mui/material/Chip";
-import type { Theme, SxProps } from "@mui/material/styles";
-import type { TextFieldProps } from "@mui/material/TextField";
-import Select, { type SelectProps } from "@mui/material/Select";
-import type { FormControlProps } from "@mui/material/FormControl";
-import Checkbox, { type CheckboxProps } from "@mui/material/Checkbox";
-import InputLabel, { type InputLabelProps } from "@mui/material/InputLabel";
 import { MenuItem, TextField } from "@mui/material";
+import Box from "@mui/material/Box";
+import Checkbox, { type CheckboxProps } from "@mui/material/Checkbox";
+import Chip, { type ChipProps } from "@mui/material/Chip";
+import type { FormControlProps } from "@mui/material/FormControl";
+import FormControl from "@mui/material/FormControl";
 import FormHelperText, {
   type FormHelperTextProps,
 } from "@mui/material/FormHelperText";
+import InputLabel, { type InputLabelProps } from "@mui/material/InputLabel";
+import Select, { type SelectProps } from "@mui/material/Select";
+import type { SxProps, Theme } from "@mui/material/styles";
+import type { TextFieldProps } from "@mui/material/TextField";
 
 //------------------------------------------------------------------------
 
@@ -72,6 +72,29 @@ export const RHFSelect = ({
         </TextField>
       )}
     />
+  );
+};
+
+//------------------------------------------------------------------------
+
+type RHFSelectOptionProps = {
+  value: string;
+  label?: string;
+  as?: React.ElementType;
+  children?: React.ReactNode;
+} & React.ComponentPropsWithoutRef<any>;
+
+RHFSelect.Option = function RHFSelectOption({
+  value,
+  label,
+  as: Component = MenuItem,
+  children,
+  ...props
+}: RHFSelectOptionProps) {
+  return (
+    <Component value={value} {...props}>
+      {children ?? label}
+    </Component>
   );
 };
 
