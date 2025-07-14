@@ -1,7 +1,7 @@
 "use client";
 
 import BookLayout from "@/shared/layout/layout";
-import BookStep1 from "./Step1";
+import BookStep1 from "./step1-form";
 
 import { bookReviewSchema } from "@/schema/review-schema";
 import FormProvider from "@/shared/components/form/form-provider";
