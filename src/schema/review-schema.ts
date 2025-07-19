@@ -44,8 +44,10 @@ export const bookReviewSchema = yup.object({
 
   rating: yup.number().min(0).max(5).required("별점을 입력해주세요."),
 
+  isRecommended: yup.boolean().optional().default(false),
+
   review: yup.string().when("rating", {
-    is: (val: number) => val === 1 || val === 5,
+    is: (val: number) => val <= 1 || val === 5,
     then: (schema) =>
       schema
         .required("별점 1점 또는 5점에는 후기를 입력해야 합니다.")

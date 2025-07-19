@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import { Stack } from "@mui/material";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 
 import BookStep1 from "@/components/review/step1-form";
 import BookStep2 from "@/components/review/step2-form";
@@ -15,10 +15,14 @@ import { useFunnel } from "@/shared/components/form/funnel";
 const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
 
 const ReviewFunnel = () => {
-  const { trigger, getValues } = useFormContext<InferredBookReviewSchema>();
+  const { trigger, control } = useFormContext<InferredBookReviewSchema>();
 
-  // 폼 값들을 감시
-  const 별점 = getValues("rating");
+  // ✅ 별점 값을 실시간으로 감시
+  const 별점 = useWatch({
+    control,
+    name: "rating",
+  });
+
   const 독후감필수 = 별점 <= 1 || 별점 === 5;
 
   const {
@@ -63,9 +67,6 @@ const ReviewFunnel = () => {
     }
   };
 
-  // 현재 스텝이 독후감이고 필수가 아닌 경우
-  const isReviewStepOptional = getCurrentStepIndex() === 2 && !독후감필수;
-
   return (
     <Stack spacing={4}>
       {/* 진행 상태 표시 */}
@@ -100,7 +101,7 @@ const ReviewFunnel = () => {
           <Funnel.Navigation>
             <Funnel.Prev onClick={goPrevStep} />
 
-            {isReviewStepOptional && <Funnel.Skip onClick={goNextStep} />}
+            {!독후감필수 && <Funnel.Skip onClick={goNextStep} />}
             <Funnel.Next onClick={handleNextStep3} />
           </Funnel.Navigation>
         </Funnel.Step>

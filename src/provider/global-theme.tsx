@@ -1,5 +1,5 @@
-import { useMemo } from "react";
 import merge from "lodash/merge";
+import { useMemo } from "react";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import type { ThemeOptions } from "@mui/material/styles";
@@ -15,9 +15,9 @@ import { typography } from "@/shared/theme/typography";
 // options
 
 import { customShadows } from "@/shared/theme/custom-shadows";
-import { componentsOverrides } from "@/shared/theme/overrides";
-import { createPresets } from "@/shared/theme/options/presets";
 import { createContrast } from "@/shared/theme/options/contrast";
+import { createPresets } from "@/shared/theme/options/presets";
+import { componentsOverrides } from "@/shared/theme/overrides";
 
 // ----------------------------------------------------------------------
 
@@ -41,12 +41,11 @@ export default function ThemeProvider({ children }: Props) {
         ...customShadows("light"),
         ...presets.customShadows,
       },
-      direction: "rtl",
       shadows: shadows("light"),
       shape: { borderRadius: 8 },
       typography,
     }),
-    ["light", "rtl", presets.palette, presets.customShadows, contrast.palette]
+    ["light", presets.palette, presets.customShadows, contrast.palette]
   );
 
   const theme = createTheme(memoizedValue as ThemeOptions);

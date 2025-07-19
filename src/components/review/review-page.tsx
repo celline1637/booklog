@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
 import { READ_STATUS } from "@/config/read-status";
-import ReviewForm from "./review-form";
+import ReviewForm from "./review-funnel";
 
 const ReviewPage = () => {
   const methods = useForm({
