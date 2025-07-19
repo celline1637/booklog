@@ -14,7 +14,7 @@ import { useFunnel } from "@/shared/components/form/funnel";
 
 const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
 
-const ReviewForm = () => {
+const ReviewFunnel = () => {
   const { trigger, getValues } = useFormContext<InferredBookReviewSchema>();
 
   // 폼 값들을 감시
@@ -109,4 +109,4 @@ const ReviewForm = () => {
   );
 };
 
-export default ReviewForm;
+export default ReviewFunnel;
