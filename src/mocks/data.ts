@@ -1,6 +1,6 @@
-import type { BookDetail, BookSummary } from "@/types/book";
+import type { Book, BookDetail, BookSummary } from "@/types/book";
 
-export const mockBooks: BookSummary[] = [
+export const mockReviews: BookSummary[] = [
   {
     id: 1,
     emoji: "📘",
@@ -21,7 +21,7 @@ export const mockBooks: BookSummary[] = [
   },
 ];
 
-export const mockBookDetails: BookDetail[] = [
+export const mockReviewsDetails: BookDetail[] = [
   {
     id: 1,
     emoji: "📘",
@@ -63,5 +63,128 @@ export const mockBookDetails: BookDetail[] = [
       "실무에서 겪는 다양한 상황들과 문제 해결 방법이 잘 정리되어 있습니다. 주니어 개발자에게 특히 추천합니다.",
     rating: 4,
     tags: ["프론트엔드", "개발", "회고"],
+  },
+];
+
+export const mockBooks: Book[] = [
+  {
+    id: 1,
+    title: "리액트 완벽 가이드",
+    author: "김개발",
+    publisher: "테크출판사",
+    publishedAt: "2024. 12. 1.",
+    totalPages: 400,
+  },
+  {
+    id: 2,
+    title: "AI로 바뀌는 세상",
+    author: "박미래",
+    publisher: "미래출판사",
+    publishedAt: "2024. 11. 15.",
+    totalPages: 350,
+  },
+  {
+    id: 3,
+    title: "프론트엔드 개발자의 회고록",
+    author: "이경험",
+    publisher: "개발자출판사",
+    publishedAt: "2024. 10. 20.",
+    totalPages: 320,
+  },
+  {
+    id: 4,
+    title: "자바스크립트 심화",
+    author: "최코드",
+    publisher: "코딩출판사",
+    publishedAt: "2024. 9. 5.",
+    totalPages: 450,
+  },
+  {
+    id: 5,
+    title: "타입스크립트 입문",
+    author: "박타입",
+    publisher: "프로그래밍북스",
+    publishedAt: "2024. 8. 12.",
+    totalPages: 280,
+  },
+  {
+    id: 6,
+    title: "클린 코드",
+    author: "로버트 마틴",
+    publisher: "인사이트",
+    publishedAt: "2024. 7. 25.",
+    totalPages: 500,
+  },
+  {
+    id: 7,
+    title: "데이터베이스 설계",
+    author: "정데이터",
+    publisher: "DB출판사",
+    publishedAt: "2024. 6. 18.",
+    totalPages: 370,
+  },
+  {
+    id: 8,
+    title: "파이썬으로 배우는 알고리즘",
+    author: "이파이",
+    publisher: "알고리즘북스",
+    publishedAt: "2024. 5. 30.",
+    totalPages: 410,
+  },
+  {
+    id: 9,
+    title: "UX/UI 디자인 원칙",
+    author: "김디자인",
+    publisher: "디자인출판사",
+    publishedAt: "2024. 4. 10.",
+    totalPages: 260,
+  },
+  {
+    id: 10,
+    title: "네트워크 기초",
+    author: "송네트",
+    publisher: "IT출판사",
+    publishedAt: "2024. 3. 22.",
+    totalPages: 340,
+  },
+  {
+    id: 11,
+    title: "클라우드 컴퓨팅",
+    author: "박클라우드",
+    publisher: "클라우드북스",
+    publishedAt: "2024. 2. 15.",
+    totalPages: 390,
+  },
+  {
+    id: 12,
+    title: "머신러닝 실전",
+    author: "최머신",
+    publisher: "AI출판사",
+    publishedAt: "2024. 1. 5.",
+    totalPages: 420,
+  },
+  {
+    id: 13,
+    title: "함수형 프로그래밍",
+    author: "이함수",
+    publisher: "프로그래밍북스",
+    publishedAt: "2023. 12. 20.",
+    totalPages: 310,
+  },
+  {
+    id: 14,
+    title: "모던 웹 개발",
+    author: "정웹",
+    publisher: "웹출판사",
+    publishedAt: "2023. 11. 10.",
+    totalPages: 360,
+  },
+  {
+    id: 15,
+    title: "테스트 주도 개발",
+    author: "김테스트",
+    publisher: "테스트북스",
+    publishedAt: "2023. 10. 1.",
+    totalPages: 330,
   },
 ];
