@@ -38,7 +38,7 @@ const ReviewFunnel = () => {
   const validateFields: Record<string, (keyof InferredBookReviewSchema)[]> =
     useMemo(
       () => ({
-        기본정보: ["title", "status", "publishDate"],
+        기본정보: ["title", "status", "publishDate", "startDate", "endDate"],
         평가: ["rating"],
         독후감: 독후감필수 ? ["review"] : [],
       }),
