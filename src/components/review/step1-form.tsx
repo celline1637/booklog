@@ -38,6 +38,7 @@ const BookStep1 = () => {
           <Typography variant={"body2"} sx={{ display: "flex", gap: 1 }}>
             {"독서 상태"}
           </Typography>
+
           <RHFSelect
             name="status"
             onChange={(e) =>
@@ -46,7 +47,9 @@ const BookStep1 = () => {
             fullWidth
           >
             {typedEntries(READ_STATUS).map(([key, { value, label }]) => (
-              <RHFSelect.Option key={key} value={value} label={label} />
+              <RHFSelect.Option key={key} value={value}>
+                {label}
+              </RHFSelect.Option>
             ))}
           </RHFSelect>
         </Stack>
