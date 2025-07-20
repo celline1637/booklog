@@ -54,7 +54,7 @@ export const bookReviewSchema = yup.object({
     .min(1)
     .required("전체 페이지 수를 입력해주세요."),
 
-  rating: yup.number().min(0.5).max(5).required("별점을 입력해주세요."),
+  rating: yup.number().min(0).max(5).required("별점을 입력해주세요."),
 
   isRecommended: yup.boolean().optional().default(false),
 
@@ -74,19 +74,42 @@ export const bookReviewSchema = yup.object({
         text: yup.string().required("인용구 내용을 입력해주세요."),
         page: yup
           .number()
-          .min(1)
-          .required("페이지 번호를 입력해주세요.")
-          .test(
-            "max-page",
-            "전체 페이지 수를 넘을 수 없습니다.",
-            function (value) {
-              const { totalPageCount } = this.options.context || {};
-              return !totalPageCount || (value ?? 0) <= totalPageCount;
-            }
-          ),
+          .nullable()
+          .transform((value, originalValue) => {
+            // 빈 문자열이나 NaN을 null로 변환
+            if (originalValue === "" || isNaN(value)) return null;
+            return value;
+          })
+          .when("$quotesLength", {
+            is: (quotesLength: number) => quotesLength >= 2,
+            then: (schema) =>
+              schema
+                .required("인용구가 2개 이상일 때는 페이지 번호가 필수입니다.")
+                .min(1, "페이지 번호는 1 이상이어야 합니다.")
+                .test(
+                  "max-page",
+                  "전체 페이지 수를 넘을 수 없습니다.",
+                  function (value) {
+                    const { totalPageCount } = this.options.context || {};
+                    return !totalPageCount || !value || value <= totalPageCount;
+                  }
+                ),
+            otherwise: (schema) =>
+              schema
+                .optional()
+                .test(
+                  "max-page-optional",
+                  "전체 페이지 수를 넘을 수 없습니다.",
+                  function (value) {
+                    const { totalPageCount } = this.options.context || {};
+                    return !totalPageCount || !value || value <= totalPageCount;
+                  }
+                ),
+          }),
       })
     )
-    .required(),
+    .required()
+    .min(1, "최소 1개의 인용구를 입력해주세요."),
 
   isPublic: yup.boolean().required(),
 });

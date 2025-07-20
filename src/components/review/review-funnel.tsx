@@ -11,6 +11,7 @@ import BookStep3 from "@/components/review/step3-form";
 import { LinearStepper } from "@/components/review/stepper";
 import { type InferredBookReviewSchema } from "@/schema/review-schema";
 import { useFunnel } from "@/shared/components/form/funnel";
+import BookStep4 from "./step4-form";
 
 const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
 
@@ -47,30 +48,15 @@ const ReviewFunnel = () => {
         ],
         평가: ["rating"],
         독후감: 독후감필수 ? ["review"] : [],
+        인용구: ["quotes"],
+        "공개 여부": ["isPublic"],
       }),
       [독후감필수]
     );
 
-  // 스텝 별 검증과 함께 다음 단계로 이동하는 핸들러들
-  const handleNextStep1 = createValidatedNextHandler(
-    validateFields.기본정보,
-    trigger
-  );
-  const handleNextStep2 = createValidatedNextHandler(
-    validateFields.평가,
-    trigger
-  );
-  const handleNextStep3 = createValidatedNextHandler(
-    validateFields.독후감,
-    trigger
-  );
-
-  const handleSubmit = async () => {
-    const isValid = await trigger();
-    if (isValid) {
-      // 폼 제출 로직
-      console.log("폼 제출!");
-    }
+  const handleNextStep = (stepName: string) => () => {
+    const fieldsToValidate = validateFields[stepName] || [];
+    return createValidatedNextHandler(fieldsToValidate, trigger)();
   };
 
   return (
@@ -88,7 +74,7 @@ const ReviewFunnel = () => {
 
           <Funnel.Navigation>
             <Funnel.Prev onClick={goPrevStep} disabled={isFirstStep()} />
-            <Funnel.Next onClick={handleNextStep1} />
+            <Funnel.Next onClick={handleNextStep("기본정보")} />
           </Funnel.Navigation>
         </Funnel.Step>
 
@@ -97,7 +83,7 @@ const ReviewFunnel = () => {
 
           <Funnel.Navigation>
             <Funnel.Prev onClick={goPrevStep} />
-            <Funnel.Next onClick={handleNextStep2} />
+            <Funnel.Next onClick={handleNextStep("평가")} />
           </Funnel.Navigation>
         </Funnel.Step>
 
@@ -108,7 +94,15 @@ const ReviewFunnel = () => {
             <Funnel.Prev onClick={goPrevStep} />
 
             {!독후감필수 && <Funnel.Skip onClick={goNextStep} />}
-            <Funnel.Next onClick={handleNextStep3} />
+            <Funnel.Next onClick={handleNextStep("독후감")} />
+          </Funnel.Navigation>
+        </Funnel.Step>
+
+        <Funnel.Step name="인용구">
+          <BookStep4 />
+          <Funnel.Navigation>
+            <Funnel.Prev onClick={goPrevStep} />
+            <Funnel.Next onClick={handleNextStep("인용구")} />
           </Funnel.Navigation>
         </Funnel.Step>
       </Funnel>
