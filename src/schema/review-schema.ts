@@ -3,17 +3,29 @@ import * as yup from "yup";
 import { READ_STATUS } from "../config/read-status";
 
 export const bookReviewSchema = yup.object({
+  // 선택된 도서 정보
+  selectedBook: yup
+    .object({
+      id: yup.number().required(),
+      title: yup.string().required(),
+      author: yup.string().required(),
+      publisher: yup.string().required(),
+      publishedAt: yup.string().required(),
+      totalPages: yup.number().required(),
+    })
+    .required("도서를 선택해주세요."),
+
   title: yup.string().required("도서 제목을 입력해주세요."),
+  author: yup.string().required("저자를 입력해주세요."),
+  publishDate: yup.date().required("출판일을 입력해주세요."),
+
   status: yup
     .string()
     .oneOf(typedKeys(READ_STATUS))
     .required("독서 상태를 선택해주세요."),
 
-  publishDate: yup.date().required("출판일을 입력해주세요."),
-
   startDate: yup
     .date()
-
     .nullable()
     .min(yup.ref("publishDate"), "출판일 이후로 시작일을 설정해주세요.")
     .when("status", {
@@ -42,7 +54,7 @@ export const bookReviewSchema = yup.object({
     .min(1)
     .required("전체 페이지 수를 입력해주세요."),
 
-  rating: yup.number().min(0).max(5).required("별점을 입력해주세요."),
+  rating: yup.number().min(0.5).max(5).required("별점을 입력해주세요."),
 
   isRecommended: yup.boolean().optional().default(false),
 

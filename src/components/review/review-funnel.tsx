@@ -17,7 +17,6 @@ const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여�
 const ReviewFunnel = () => {
   const { trigger, control } = useFormContext<InferredBookReviewSchema>();
 
-  // ✅ 별점 값을 실시간으로 감시
   const 별점 = useWatch({
     control,
     name: "rating",
@@ -38,7 +37,14 @@ const ReviewFunnel = () => {
   const validateFields: Record<string, (keyof InferredBookReviewSchema)[]> =
     useMemo(
       () => ({
-        기본정보: ["title", "status", "publishDate", "startDate", "endDate"],
+        기본정보: [
+          "title",
+          "status",
+          "publishDate",
+          "startDate",
+          "endDate",
+          "selectedBook",
+        ],
         평가: ["rating"],
         독후감: 독후감필수 ? ["review"] : [],
       }),
