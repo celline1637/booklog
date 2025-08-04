@@ -10,7 +10,7 @@
 
 - **Next.js 15 (Page Router X)**
 - **TypeScript**
-- **React Hook Form + Yup**: 폼 상태 및 검증
+- **React Hook Form + Zod**: 폼 상태 및 검증
 - **MUI (Material UI)**: UI 컴포넌트
 - **Dayjs**: 날짜 처리
 - **Jotai**: 전역 상태 관리 및 로컬 스토리지 persistence
@@ -23,7 +23,7 @@
 | 기능                          | 설명                                                      |
 | ----------------------------- | --------------------------------------------------------- |
 | 📖 멀티 스텝 폼               | 총 5단계: 책 정보 → 별점 → 독후감 → 인용구 → 공개 여부    |
-| ✅ 유효성 검증                | 각 스텝마다 Yup을 통한 세부 조건 검증 지원                |
+| ✅ 유효성 검증                | 각 스텝마다 Zod을 통한 세부 조건 검증 지원                |
 | 💾 폼 상태 저장               | Jotai + atomWithStorage로 새로고침 후에도 상태 복원       |
 | 📅 날짜 유효성 처리           | 출판일, 시작일, 종료일 간의 상호 유효성 검증 포함         |
 | ♻️ 재사용 가능한 RHF 컴포넌트 | RHFTextField, RHFDateTimePicker 등 추상화된 입력 컴포넌트 |
@@ -46,7 +46,7 @@ pnpm dev
 ```
 src/
 ├── pages/               # Next.js 라우트 파일
-├── schema/              # Yup 기반 폼 유효성 스키마
+├── schema/              # Zod 기반 폼 유효성 스키마
 ├── shared/
 │   ├── components/      # RHF, Funnel, Layout 등 공용 컴포넌트
 │   ├── theme/           # MUI 테마 및 emotion SSR 설정
