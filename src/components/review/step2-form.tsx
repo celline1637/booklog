@@ -2,12 +2,12 @@
 
 import { Controller, useFormContext } from "react-hook-form";
 
-import { type InferredBookReviewSchema } from "@/schema/review-schema";
+import { type BookReviewFormValues } from "@/schema/review-schema";
 import { RHFSwitch } from "@/shared/components/form/rhf-switch";
 import { Box, Card, Rating, Stack, Typography } from "@mui/material";
 
 const BookStep2 = () => {
-  const { control } = useFormContext<InferredBookReviewSchema>();
+  const { control } = useFormContext<BookReviewFormValues>();
 
   return (
     <Card sx={{ p: 3 }}>

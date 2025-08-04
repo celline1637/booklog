@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 
-import { type InferredBookReviewSchema } from "@/schema/review-schema";
+import { type BookReviewFormValues } from "@/schema/review-schema";
 import RHFTextField from "@/shared/components/form/rhf-text-field";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,26 +18,23 @@ import {
 
 const BookStep4 = () => {
   const {
-    control,
     formState: { errors },
-  } = useFormContext<InferredBookReviewSchema>();
+  } = useFormContext<BookReviewFormValues>();
 
   const { fields, append, remove } = useFieldArray({
-    control,
     name: "quotes",
   });
 
-  const totalPageCount = useWatch({
-    control,
-    name: "totalPageCount",
+  const selectedBook = useWatch({
+    name: "selectedBook",
   });
 
   const quotes = useWatch({
-    control,
     name: "quotes",
   });
 
   const quotesLength = quotes?.length || 0;
+  const totalPageCount = selectedBook?.totalPages;
 
   // 인용구 추가
   const handleAddQuote = useCallback(() => {

@@ -30,8 +30,8 @@ export const DefaultErrorFallback = memo(function DefaultErrorFallback({
   );
 });
 
-// AsyncWrapper 컴포넌트 타입 정의
-interface AsyncWrapperProps {
+// SafeAsyncBoundary 컴포넌트 타입 정의
+interface SafeAsyncBoundaryProps {
   children: ReactNode;
   loadingFallback?: ReactNode;
   errorFallback?: (error: Error) => ReactNode;
@@ -48,13 +48,13 @@ interface AsyncWrapperProps {
  * @param loadingText - 로딩 텍스트 커스터마이징
  * @param errorTitle - 에러 제목 커스터마이징
  */
-export const AsyncWrapper = memo(function AsyncWrapper({
+export const SafeAsyncBoundary = memo(function SafeAsyncBoundary({
   children,
   loadingFallback,
   errorFallback,
   loadingText = "로딩 중...",
   errorTitle = "일시적인 오류가 발생했습니다.",
-}: AsyncWrapperProps) {
+}: SafeAsyncBoundaryProps) {
   // 커스텀 로딩 컴포넌트 또는 기본 컴포넌트
   const LoadingComponent = loadingFallback || (
     <Box display="flex" alignItems="center" gap={2} p={2}>

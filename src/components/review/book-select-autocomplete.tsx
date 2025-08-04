@@ -1,6 +1,6 @@
 import { useBooks } from "@/entities/books/use-books";
-import { AsyncWrapper } from "@/shared/components/async-wrapper";
 import { RHFAutocomplete } from "@/shared/components/form/rhf-autocomplete";
+import { SafeAsyncBoundary } from "@/shared/components/safe-async-boundary";
 import type { Book } from "@/types/book";
 import { Avatar, Box, Chip, Stack, Typography } from "@mui/material";
 import { memo, useCallback, type SyntheticEvent } from "react";
@@ -82,7 +82,7 @@ const BookSelectAutocompleteInner = memo(function BookSelectAutocompleteInner({
 
   const filterOptions = useCallback(
     (options: Book[], { inputValue }: { inputValue: string }) => {
-      if (!inputValue.trim()) return options;
+      if (inputValue == null || inputValue.trim() === "") return options;
 
       const searchTerm = inputValue.toLowerCase();
       return options.filter(
@@ -95,11 +95,20 @@ const BookSelectAutocompleteInner = memo(function BookSelectAutocompleteInner({
   );
 
   const renderOption = useCallback(
-    (props: React.HTMLAttributes<HTMLLIElement>, option: Book) => (
-      <Box component="li" {...props}>
-        <BookOptionItem book={option} />
-      </Box>
-    ),
+    (
+      props: React.HTMLAttributes<HTMLLIElement> & {
+        key: React.Key;
+      },
+      option: Book
+    ) => {
+      const { key, ...rest } = props;
+
+      return (
+        <Box key={key} component="li" {...rest}>
+          <BookOptionItem book={option} />
+        </Box>
+      );
+    },
     []
   );
 
@@ -128,7 +137,7 @@ const BookSelectAutocomplete = memo(function BookSelectAutocomplete({
   onBookSelect,
 }: BookSelectAutocompleteProps) {
   return (
-    <AsyncWrapper
+    <SafeAsyncBoundary
       loadingText="도서 목록을 불러오고 있습니다..."
       errorTitle="도서 목록을 불러오는데 실패했습니다."
     >
@@ -138,7 +147,7 @@ const BookSelectAutocomplete = memo(function BookSelectAutocomplete({
         placeholder={placeholder}
         onBookSelect={onBookSelect}
       />
-    </AsyncWrapper>
+    </SafeAsyncBoundary>
   );
 });
 

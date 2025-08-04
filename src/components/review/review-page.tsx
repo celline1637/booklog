@@ -2,9 +2,9 @@
 
 import BookLayout from "@/shared/layout/layout";
 
-import { bookReviewSchema } from "@/schema/review-schema";
+import { BookReviewSchema } from "@/schema/review-schema";
 import FormProvider from "@/shared/components/form/form-provider";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { READ_STATUS } from "@/config/read-status";
@@ -12,20 +12,16 @@ import ReviewFunnel from "./review-funnel";
 
 const ReviewPage = () => {
   const methods = useForm({
-    resolver: yupResolver(bookReviewSchema),
+    resolver: zodResolver(BookReviewSchema),
     defaultValues: {
       selectedBook: undefined,
-      title: "",
-      author: "",
-      publishDate: undefined,
-      totalPageCount: 0,
       status: READ_STATUS.TODO.value,
       startDate: null,
       endDate: null,
-      rating: 0,
+      rating: 0.5,
       isRecommended: false,
       review: "",
-      quotes: [],
+      quotes: [{ text: "", page: null }],
       isPublic: false,
     },
   });
