@@ -2,7 +2,7 @@
 
 import { useFormContext, useWatch } from "react-hook-form";
 
-import { type InferredBookReviewSchema } from "@/schema/review-schema";
+import { type BookReviewFormValues } from "@/schema/review-schema";
 import { RHFSwitch } from "@/shared/components/form/rhf-switch";
 import LockIcon from "@mui/icons-material/Lock";
 import PublicIcon from "@mui/icons-material/Public";
@@ -10,12 +10,10 @@ import { Alert, Box, Card, Divider, Stack, Typography } from "@mui/material";
 
 const BookStep5 = () => {
   const {
-    control,
     formState: { errors },
-  } = useFormContext<InferredBookReviewSchema>();
+  } = useFormContext<BookReviewFormValues>();
 
   const isPublic = useWatch({
-    control,
     name: "isPublic",
   });
 

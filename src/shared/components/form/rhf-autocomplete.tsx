@@ -38,6 +38,7 @@ export function RHFAutocomplete({
         <Autocomplete
           {...field}
           {...other}
+          value={field.value ?? null}
           id={`rhf-autocomplete-${name}`}
           onChange={(event, newValue) => {
             setValue(name, newValue, { shouldValidate: true });
