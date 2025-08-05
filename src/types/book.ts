@@ -16,6 +16,15 @@ export interface BookDetail extends BookSummary {
   tags: string[];
 }
 
+export interface Book {
+  id: number;
+  title: string;
+  author: string;
+  publisher: string;
+  publishedAt: string;
+  totalPages: number;
+}
+
 export type CreateBookRequest = Omit<
   BookDetail,
   "id" | "createdAt" | "updatedAt"

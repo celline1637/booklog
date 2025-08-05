@@ -1,9 +1,9 @@
 import { Controller, useFormContext } from "react-hook-form";
 
-import { alpha } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
 import { formHelperTextClasses } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import type { TextFieldProps } from "@mui/material/TextField";
+import TextField from "@mui/material/TextField";
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +59,7 @@ export default function RHFTextField({
               other.onChange(event);
               return;
             }
+
             if (type === "number") {
               field.onChange(Number(event.target.value), { shouldValidate });
               if (

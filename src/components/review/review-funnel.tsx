@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import { Stack } from "@mui/material";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 
 import BookStep1 from "@/components/review/step1-form";
 import BookStep2 from "@/components/review/step2-form";
@@ -11,14 +11,19 @@ import BookStep3 from "@/components/review/step3-form";
 import { LinearStepper } from "@/components/review/stepper";
 import { type InferredBookReviewSchema } from "@/schema/review-schema";
 import { useFunnel } from "@/shared/components/form/funnel";
+import BookStep4 from "./step4-form";
+import BookStep5 from "./step5-form";
 
 const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
 
 const ReviewFunnel = () => {
-  const { trigger, getValues } = useFormContext<InferredBookReviewSchema>();
+  const { trigger, control } = useFormContext<InferredBookReviewSchema>();
 
-  // 폼 값들을 감시
-  const 별점 = getValues("rating");
+  const 별점 = useWatch({
+    control,
+    name: "rating",
+  });
+
   const 독후감필수 = 별점 <= 1 || 별점 === 5;
 
   const {
@@ -34,26 +39,26 @@ const ReviewFunnel = () => {
   const validateFields: Record<string, (keyof InferredBookReviewSchema)[]> =
     useMemo(
       () => ({
-        기본정보: ["title", "status", "publishDate"],
+        기본정보: [
+          "title",
+          "status",
+          "publishDate",
+          "startDate",
+          "endDate",
+          "selectedBook",
+        ],
         평가: ["rating"],
         독후감: 독후감필수 ? ["review"] : [],
+        인용구: ["quotes"],
+        "공개 여부": ["isPublic"],
       }),
       [독후감필수]
     );
 
-  // 스텝 별 검증과 함께 다음 단계로 이동하는 핸들러들
-  const handleNextStep1 = createValidatedNextHandler(
-    validateFields.기본정보,
-    trigger
-  );
-  const handleNextStep2 = createValidatedNextHandler(
-    validateFields.평가,
-    trigger
-  );
-  const handleNextStep3 = createValidatedNextHandler(
-    validateFields.독후감,
-    trigger
-  );
+  const handleNextStep = (stepName: string) => () => {
+    const fieldsToValidate = validateFields[stepName] || [];
+    return createValidatedNextHandler(fieldsToValidate, trigger)();
+  };
 
   const handleSubmit = async () => {
     const isValid = await trigger();
@@ -62,9 +67,6 @@ const ReviewFunnel = () => {
       console.log("폼 제출!");
     }
   };
-
-  // 현재 스텝이 독후감이고 필수가 아닌 경우
-  const isReviewStepOptional = getCurrentStepIndex() === 2 && !독후감필수;
 
   return (
     <Stack spacing={4}>
@@ -81,7 +83,7 @@ const ReviewFunnel = () => {
 
           <Funnel.Navigation>
             <Funnel.Prev onClick={goPrevStep} disabled={isFirstStep()} />
-            <Funnel.Next onClick={handleNextStep1} />
+            <Funnel.Next onClick={handleNextStep("기본정보")} />
           </Funnel.Navigation>
         </Funnel.Step>
 
@@ -90,7 +92,7 @@ const ReviewFunnel = () => {
 
           <Funnel.Navigation>
             <Funnel.Prev onClick={goPrevStep} />
-            <Funnel.Next onClick={handleNextStep2} />
+            <Funnel.Next onClick={handleNextStep("평가")} />
           </Funnel.Navigation>
         </Funnel.Step>
 
@@ -100,8 +102,24 @@ const ReviewFunnel = () => {
           <Funnel.Navigation>
             <Funnel.Prev onClick={goPrevStep} />
 
-            {isReviewStepOptional && <Funnel.Skip onClick={goNextStep} />}
-            <Funnel.Next onClick={handleNextStep3} />
+            {!독후감필수 && <Funnel.Skip onClick={goNextStep} />}
+            <Funnel.Next onClick={handleNextStep("독후감")} />
+          </Funnel.Navigation>
+        </Funnel.Step>
+
+        <Funnel.Step name="인용구">
+          <BookStep4 />
+          <Funnel.Navigation>
+            <Funnel.Prev onClick={goPrevStep} />
+            <Funnel.Next onClick={handleNextStep("인용구")} />
+          </Funnel.Navigation>
+        </Funnel.Step>
+
+        <Funnel.Step name="공개 여부">
+          <BookStep5 />
+          <Funnel.Navigation>
+            <Funnel.Prev onClick={goPrevStep} />
+            <Funnel.Next onClick={handleSubmit} label="제출" />
           </Funnel.Navigation>
         </Funnel.Step>
       </Funnel>
