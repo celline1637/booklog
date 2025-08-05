@@ -69,7 +69,6 @@ const BookSelectAutocompleteInner = memo(function BookSelectAutocompleteInner({
 
   const handleChange = useCallback(
     (_event: SyntheticEvent, newValue: Book | null) => {
-      console.log("Selected book:", newValue);
       onBookSelect?.(newValue);
     },
     [onBookSelect]
@@ -123,6 +122,7 @@ const BookSelectAutocompleteInner = memo(function BookSelectAutocompleteInner({
       renderOption={renderOption}
       filterOptions={filterOptions}
       noOptionsText="검색 결과가 없습니다"
+      isOptionEqualToValue={(option, value) => option.id === value.id}
     />
   );
 });
