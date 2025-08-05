@@ -10,13 +10,15 @@ import BookStep2 from "@/components/review/step2-form";
 import BookStep3 from "@/components/review/step3-form";
 import { LinearStepper } from "@/components/review/stepper";
 import { type BookReviewFormValues } from "@/schema/review-schema";
-import { useFunnel } from "@/shared/components/form/funnel";
+import { Funnel, useFunnelContext } from "@/shared/components/form/funnel";
+import ReviewStep from "./review-step";
 import BookStep4 from "./step4-form";
 import BookStep5 from "./step5-form";
 
-const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
-
 const ReviewFunnel = () => {
+  const { steps, step, goNextStep } = useFunnelContext();
+  const currentStepIndex = steps.indexOf(step);
+
   const { trigger } = useFormContext<BookReviewFormValues>();
 
   const 별점 = useWatch({
@@ -25,17 +27,18 @@ const ReviewFunnel = () => {
 
   const 독후감필수 = 별점 <= 1 || 별점 === 5;
 
-  const {
-    FunnelElement: Funnel,
-    goNextStep,
-    goPrevStep,
-    getCurrentStepIndex,
-    isFirstStep,
-    getValidSteps,
-    createValidatedNextHandler,
-  } = useFunnel(STEPS, "기본정보");
+  const stepsMapper = useMemo(
+    () => [
+      { name: "기본정보", Component: BookStep1 },
+      { name: "평가", Component: BookStep2 },
+      { name: "독후감", Component: BookStep3, showSkip: !독후감필수 },
+      { name: "인용구", Component: BookStep4 },
+      { name: "공개 여부", Component: BookStep5, isFinal: true },
+    ],
+    [독후감필수]
+  );
 
-  const validateFields: Record<string, (keyof BookReviewFormValues)[]> =
+  const requiredFieldsByStep: Record<string, (keyof BookReviewFormValues)[]> =
     useMemo(
       () => ({
         기본정보: ["selectedBook", "status", "startDate", "endDate"],
@@ -47,73 +50,32 @@ const ReviewFunnel = () => {
       [독후감필수]
     );
 
-  const handleNextStep = (stepName: string) => () => {
-    const fieldsToValidate = validateFields[stepName] || [];
-    return createValidatedNextHandler(fieldsToValidate, trigger)();
-  };
+  const handleNextStep = (stepName: string) => async () => {
+    const fieldsToValidate = requiredFieldsByStep[stepName] || [];
 
-  const handleSubmit = async () => {
-    const isValid = await trigger();
+    const isValid = await trigger(fieldsToValidate);
     if (isValid) {
-      // 폼 제출 로직
-      console.log("폼 제출!");
+      goNextStep();
     }
   };
 
   return (
     <Stack spacing={4}>
       {/* 진행 상태 표시 */}
-      <LinearStepper
-        steps={getValidSteps()}
-        activeStep={getCurrentStepIndex()}
-      />
+      <LinearStepper steps={steps} activeStep={currentStepIndex} />
 
       {/* 폼 단계별 컨텐츠 */}
       <Funnel>
-        <Funnel.Step name="기본정보">
-          <BookStep1 />
-
-          <Funnel.Navigation>
-            <Funnel.Prev onClick={goPrevStep} disabled={isFirstStep()} />
-            <Funnel.Next onClick={handleNextStep("기본정보")} />
-          </Funnel.Navigation>
-        </Funnel.Step>
-
-        <Funnel.Step name="평가">
-          <BookStep2 />
-
-          <Funnel.Navigation>
-            <Funnel.Prev onClick={goPrevStep} />
-            <Funnel.Next onClick={handleNextStep("평가")} />
-          </Funnel.Navigation>
-        </Funnel.Step>
-
-        <Funnel.Step name="독후감">
-          <BookStep3 />
-
-          <Funnel.Navigation>
-            <Funnel.Prev onClick={goPrevStep} />
-
-            {!독후감필수 && <Funnel.Skip onClick={goNextStep} />}
-            <Funnel.Next onClick={handleNextStep("독후감")} />
-          </Funnel.Navigation>
-        </Funnel.Step>
-
-        <Funnel.Step name="인용구">
-          <BookStep4 />
-          <Funnel.Navigation>
-            <Funnel.Prev onClick={goPrevStep} />
-            <Funnel.Next onClick={handleNextStep("인용구")} />
-          </Funnel.Navigation>
-        </Funnel.Step>
-
-        <Funnel.Step name="공개 여부">
-          <BookStep5 />
-          <Funnel.Navigation>
-            <Funnel.Prev onClick={goPrevStep} />
-            <Funnel.Next onClick={handleSubmit} label="제출" />
-          </Funnel.Navigation>
-        </Funnel.Step>
+        {stepsMapper.map((step) => (
+          <ReviewStep
+            key={step.name}
+            name={step.name}
+            Component={step.Component}
+            showSkip={step.showSkip}
+            isFinal={step.isFinal}
+            handleNextStep={handleNextStep}
+          />
+        ))}
       </Funnel>
     </Stack>
   );
