@@ -1,6 +1,6 @@
-// pages/_app.tsx
 import ThemeProvider from "@/provider/global-theme";
 import { LocalizationProvider } from "@/provider/localization-provider";
+import { MSWProvider } from "@/provider/msw-provider";
 import BaseQueryClientProvider from "@/provider/query-provider";
 import createEmotionCache from "@/shared/theme/create-emotion-cache";
 import type { EmotionCache } from "@emotion/cache";
@@ -19,14 +19,16 @@ export default function App({
   emotionCache = clientSideEmotionCache,
 }: MyAppProps) {
   return (
-    <CacheProvider value={emotionCache}>
-      <BaseQueryClientProvider>
-        <ThemeProvider>
-          <LocalizationProvider>
-            <Component {...pageProps} />
-          </LocalizationProvider>
-        </ThemeProvider>
-      </BaseQueryClientProvider>
-    </CacheProvider>
+    <MSWProvider>
+      <CacheProvider value={emotionCache}>
+        <BaseQueryClientProvider>
+          <ThemeProvider>
+            <LocalizationProvider>
+              <Component {...pageProps} />
+            </LocalizationProvider>
+          </ThemeProvider>
+        </BaseQueryClientProvider>
+      </CacheProvider>
+    </MSWProvider>
   );
 }
