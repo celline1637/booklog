@@ -8,20 +8,25 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
 import { READ_STATUS } from "@/config/read-status";
-import ReviewForm from "./review-funnel";
+import ReviewFunnel from "./review-funnel";
 
 const ReviewPage = () => {
   const methods = useForm({
     resolver: yupResolver(bookReviewSchema),
     defaultValues: {
+      selectedBook: undefined,
       title: "",
+      author: "",
+      publishDate: undefined,
+      totalPageCount: 0,
       status: READ_STATUS.TODO.value,
       startDate: null,
       endDate: null,
-      totalPageCount: 0,
       rating: 0,
+      isRecommended: false,
       review: "",
       quotes: [],
+      isPublic: false,
     },
   });
 
@@ -46,7 +51,7 @@ const ReviewPage = () => {
       />
 
       <FormProvider methods={methods} onSubmit={onSubmit}>
-        <ReviewForm />
+        <ReviewFunnel />
       </FormProvider>
     </BookLayout>
   );

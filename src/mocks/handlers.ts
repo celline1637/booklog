@@ -1,19 +1,26 @@
 import type { BookDetail } from "@/types/book";
 import { http, HttpResponse } from "msw";
-import { mockBookDetails, mockBooks } from "./data";
+import { mockBooks, mockReviews, mockReviewsDetails } from "./data";
 
 export const handlers = [
-  // 책 목록 조회
+  // 도서 목록 조회
   http.get("/api/books", () => {
     return HttpResponse.json({
       data: mockBooks,
     });
   }),
 
-  // 책 상세 조회
-  http.get("/api/books/:id", ({ params }) => {
+  // 리뷰 목록 조회
+  http.get("/api/reviews", () => {
+    return HttpResponse.json({
+      data: mockReviews,
+    });
+  }),
+
+  // 리뷰 상세 조회
+  http.get("/api/reviews/:id", ({ params }) => {
     const id = Number(params.id);
-    const book = mockBookDetails.find((book) => book.id === id);
+    const book = mockReviewsDetails.find((book) => book.id === id);
 
     if (!book) {
       return HttpResponse.json(
@@ -27,8 +34,8 @@ export const handlers = [
     });
   }),
 
-  // 책 생성
-  http.post("/api/books", async ({ request }) => {
+  // 리뷰 생성
+  http.post("/api/reviews", async ({ request }) => {
     const body = (await request.json()) as Omit<
       BookDetail,
       "id" | "createdAt" | "updatedAt"
@@ -36,13 +43,13 @@ export const handlers = [
 
     const newBook: BookDetail = {
       ...body,
-      id: mockBookDetails.length + 1,
+      id: mockReviewsDetails.length + 1,
       createdAt: new Date().toLocaleDateString("ko-KR"),
       updatedAt: new Date().toLocaleDateString("ko-KR"),
     };
 
-    mockBookDetails.push(newBook);
-    mockBooks.push({
+    mockReviewsDetails.push(newBook);
+    mockReviews.push({
       id: newBook.id,
       emoji: newBook.emoji,
       title: newBook.title,
