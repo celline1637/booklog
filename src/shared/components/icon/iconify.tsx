@@ -1,7 +1,7 @@
 "use client";
 
-import { forwardRef } from "react";
 import { Icon } from "@iconify/react";
+import { forwardRef } from "react";
 
 import Box from "@mui/material/Box";
 import NoSsr from "@mui/material/NoSsr";
