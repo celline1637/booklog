@@ -25,15 +25,12 @@ const BookStep4 = () => {
     name: "quotes",
   });
 
+  const quotesLength = fields.length;
+
   const selectedBook = useWatch({
     name: "selectedBook",
   });
 
-  const quotes = useWatch({
-    name: "quotes",
-  });
-
-  const quotesLength = quotes?.length || 0;
   const totalPageCount = selectedBook?.totalPages;
 
   // 인용구 추가
