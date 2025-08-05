@@ -12,6 +12,7 @@ import { LinearStepper } from "@/components/review/stepper";
 import { type InferredBookReviewSchema } from "@/schema/review-schema";
 import { useFunnel } from "@/shared/components/form/funnel";
 import BookStep4 from "./step4-form";
+import BookStep5 from "./step5-form";
 
 const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
 
@@ -59,6 +60,14 @@ const ReviewFunnel = () => {
     return createValidatedNextHandler(fieldsToValidate, trigger)();
   };
 
+  const handleSubmit = async () => {
+    const isValid = await trigger();
+    if (isValid) {
+      // 폼 제출 로직
+      console.log("폼 제출!");
+    }
+  };
+
   return (
     <Stack spacing={4}>
       {/* 진행 상태 표시 */}
@@ -103,6 +112,14 @@ const ReviewFunnel = () => {
           <Funnel.Navigation>
             <Funnel.Prev onClick={goPrevStep} />
             <Funnel.Next onClick={handleNextStep("인용구")} />
+          </Funnel.Navigation>
+        </Funnel.Step>
+
+        <Funnel.Step name="공개 여부">
+          <BookStep5 />
+          <Funnel.Navigation>
+            <Funnel.Prev onClick={goPrevStep} />
+            <Funnel.Next onClick={handleSubmit} label="제출" />
           </Funnel.Navigation>
         </Funnel.Step>
       </Funnel>
