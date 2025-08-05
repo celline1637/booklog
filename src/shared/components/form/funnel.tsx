@@ -168,12 +168,11 @@ const Skip = ({ onClick, disabled, label = "건너뛰기" }: FunnelButtonProps) 
   );
 };
 
-const Submit = ({ onClick, disabled, label = "제출" }: FunnelButtonProps) => {
+const Submit = ({ disabled, label = "제출" }: FunnelButtonProps) => {
   return (
     <Button
       variant="contained"
       color="primary"
-      onClick={onClick}
       disabled={disabled}
       type="submit"
     >
