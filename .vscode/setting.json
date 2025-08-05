@@ -1,7 +1,0 @@
-{
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "biomejs.biome",
-  "biome.format.enable": true,
-  "biome.lint.autoFix": true,
-  "biome.lint.run": "onSave"
-}

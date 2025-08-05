@@ -13,14 +13,11 @@
       "recommended": true,
       "style": {
         "noNonNullAssertion": "warn",
-        "useImportType": "error",
-        "sortObjectKeys": "warn",
-        "noDuplicateObjectKeys": "error"
+        "useImportType": "error"
       },
       "correctness": {
         "noUnusedVariables": "error",
-        "useExhaustiveDependencies": "warn",
-        "noShadowRestrictedNames": "error"
+        "useExhaustiveDependencies": "warn"
       },
       "suspicious": {
         "noExplicitAny": "warn",
