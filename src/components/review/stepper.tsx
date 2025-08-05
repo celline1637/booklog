@@ -3,7 +3,7 @@ import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
 
 type Props = {
-  steps: string[];
+  steps: readonly string[] | string[];
   activeStep: number;
 };
 
