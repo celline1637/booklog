@@ -1,9 +1,9 @@
 "use client";
 
-import React, { type ReactNode } from "react";
+import { type ReactNode } from "react";
 
-import * as S from "./layout.styled";
 import { Typography } from "@mui/material";
+import * as S from "./layout.styled";
 
 interface HeaderProps extends TitleProps {
   children?: ReactNode;
