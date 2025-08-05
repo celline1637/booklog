@@ -59,6 +59,7 @@ export default function RHFTextField({
               other.onChange(event);
               return;
             }
+
             if (type === "number") {
               field.onChange(Number(event.target.value), { shouldValidate });
               if (
