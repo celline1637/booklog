@@ -1,54 +1,98 @@
 import { Button, Stack } from "@mui/material";
 import {
   Children,
-  ReactNode,
+  createContext,
   isValidElement,
   useCallback,
+  useContext,
   useMemo,
   useState,
+  type ReactNode,
 } from "react";
 
-export interface FunnelProps<T extends readonly string[]> {
+// --------------------------------------------
+// Context & Provider
+// --------------------------------------------
+type FunnelContextType<T extends readonly string[]> = {
+  steps: T;
   step: T[number];
-  children: ReactNode;
+  setStep: (step: T[number]) => void;
+  goNextStep: () => void;
+  goPrevStep: () => void;
+};
+
+const FunnelContext = createContext<FunnelContextType<any> | null>(null);
+
+export function useFunnelContext<T extends readonly string[]>() {
+  const ctx = useContext(FunnelContext);
+  if (!ctx)
+    throw new Error("useFunnelContext must be used within FunnelProvider");
+  return ctx as FunnelContextType<T>;
 }
 
-const Funnel = <T extends readonly string[]>({
-  step,
+const FunnelProvider = <T extends readonly string[]>({
+  steps,
+  initialStep,
   children,
-}: FunnelProps<T>) => {
-  const validElement = Children.toArray(children).filter(isValidElement);
-  const targetElement = validElement.find(
-    (child) => (child.props as StepProps<T>)?.name === step
+}: {
+  steps: T;
+  initialStep?: T[number];
+  children: ReactNode;
+}) => {
+  const [step, setStep] = useState<T[number]>(initialStep ?? steps[0]);
+
+  const goNextStep = useCallback(() => {
+    const currentIdx = steps.indexOf(step);
+    if (currentIdx < steps.length - 1) setStep(steps[currentIdx + 1]);
+  }, [step, steps]);
+
+  const goPrevStep = useCallback(() => {
+    const currentIdx = steps.indexOf(step);
+    if (currentIdx > 0) setStep(steps[currentIdx - 1]);
+  }, [step, steps]);
+
+  const value = useMemo(
+    () => ({ step, steps, setStep, goNextStep, goPrevStep }),
+    [step, steps, goNextStep, goPrevStep]
   );
 
-  if (!targetElement) {
-    return null;
-  }
-
-  return <>{targetElement}</>;
+  return (
+    <FunnelContext.Provider value={value}>{children}</FunnelContext.Provider>
+  );
 };
 
-export interface StepProps<T extends readonly string[]> {
-  name: T[number];
-  children?: ReactNode;
-}
+// --------------------------------------------
+// Funnel / Step / Navigation
+// --------------------------------------------
+const Funnel = ({ children }: { children: ReactNode }) => {
+  const { step } = useFunnelContext();
+  const validChildren = Children.toArray(children).filter(isValidElement);
 
-const Step = <T extends readonly string[]>({ children }: StepProps<T>) => {
+  const matched = validChildren.find(
+    (child) => (child.props as any).name === step
+  );
+
+  return <>{matched}</>;
+};
+
+const Step = <T extends readonly string[]>({
+  children,
+}: {
+  name: T[number];
+  children: ReactNode;
+}) => {
   return <>{children}</>;
 };
-
-export interface NavigationProps {
-  children?: ReactNode;
-  justifyContent?: "space-between" | "flex-start" | "flex-end" | "center";
-  spacing?: number;
-}
 
 const Navigation = ({
   children,
   justifyContent = "space-between",
   spacing = 2,
-}: NavigationProps) => {
+}: {
+  children?: ReactNode;
+  justifyContent?: "space-between" | "flex-start" | "flex-end" | "center";
+  spacing?: number;
+}) => {
   return (
     <Stack
       direction="row"
@@ -61,177 +105,91 @@ const Navigation = ({
   );
 };
 
-export interface ButtonProps {
+// --------------------------------------------
+// Buttons
+// --------------------------------------------
+interface FunnelButtonProps {
   onClick?: () => void | Promise<void>;
   disabled?: boolean;
   label?: string;
-  variant?: "contained" | "outlined" | "text";
 }
 
-const Prev = ({
-  onClick,
-  disabled,
-  label = "이전",
-  variant = "outlined",
-}: ButtonProps) => {
+const Prev = ({ onClick, disabled, label = "이전" }: FunnelButtonProps) => {
+  const { goPrevStep, step, steps } = useFunnelContext();
+
   const handleClick = async () => {
-    if (onClick) {
-      await onClick();
-    }
-  };
-
-  return (
-    <Button variant={variant} onClick={handleClick} disabled={disabled}>
-      {label}
-    </Button>
-  );
-};
-
-const Next = ({
-  onClick,
-  disabled,
-  label = "다음",
-  variant = "contained",
-}: ButtonProps) => {
-  const handleClick = async () => {
-    if (onClick) {
-      await onClick();
-    }
-  };
-
-  return (
-    <Button variant={variant} onClick={handleClick} disabled={disabled}>
-      {label}
-    </Button>
-  );
-};
-
-const Skip = ({
-  onClick,
-  disabled,
-  label = "건너뛰기",
-  variant = "outlined",
-}: ButtonProps) => {
-  const handleClick = async () => {
-    if (onClick) {
-      await onClick();
-    }
+    if (onClick) await onClick();
+    else goPrevStep();
   };
 
   return (
     <Button
-      variant={variant}
+      variant="outlined"
       onClick={handleClick}
-      disabled={disabled}
+      disabled={disabled ?? step === steps[0]}
+    >
+      {label}
+    </Button>
+  );
+};
+
+const Next = ({ onClick, disabled, label = "다음" }: FunnelButtonProps) => {
+  const { goNextStep } = useFunnelContext();
+
+  const handleClick = async () => {
+    if (onClick) await onClick();
+    else goNextStep();
+  };
+
+  return (
+    <Button variant="contained" onClick={handleClick} disabled={disabled}>
+      {label}
+    </Button>
+  );
+};
+
+const Skip = ({ onClick, disabled, label = "건너뛰기" }: FunnelButtonProps) => {
+  const { goNextStep } = useFunnelContext();
+
+  const handleClick = async () => {
+    if (onClick) await onClick();
+    else goNextStep();
+  };
+
+  return (
+    <Button
+      variant="outlined"
       color="secondary"
-    >
-      {label}
-    </Button>
-  );
-};
-
-const Submit = ({
-  onClick,
-  disabled,
-  label = "완료",
-  variant = "contained",
-}: ButtonProps) => {
-  const handleClick = async () => {
-    if (onClick) {
-      await onClick();
-    }
-  };
-
-  return (
-    <Button
-      variant={variant}
       onClick={handleClick}
       disabled={disabled}
-      color="primary"
     >
       {label}
     </Button>
   );
 };
 
-export const useFunnel = <T extends readonly string[]>(
-  steps: T,
-  defaultStep?: T[number]
-) => {
-  const [step, setStep] = useState<T[number]>(defaultStep ?? steps[0]);
-
-  const goNextStep = useCallback(() => {
-    const currentIndex = steps.indexOf(step);
-    if (currentIndex < steps.length - 1) {
-      setStep(steps[currentIndex + 1]);
-    }
-  }, [step, steps]);
-
-  const goPrevStep = useCallback(() => {
-    const currentIndex = steps.indexOf(step);
-    if (currentIndex > 0) {
-      setStep(steps[currentIndex - 1]);
-    }
-  }, [step, steps]);
-
-  const getCurrentStepIndex = useCallback(() => {
-    return steps.indexOf(step);
-  }, [step, steps]);
-
-  const getValidSteps = useCallback(() => {
-    return steps;
-  }, [steps]);
-
-  const isFirstStep = useCallback(() => {
-    return steps[0] === step;
-  }, [step, steps]);
-
-  const isLastStep = useCallback(() => {
-    return steps[steps.length - 1] === step;
-  }, [step, steps]);
-
-  /** 스텝별 검증과 함께 다음 단계로 이동하는 헬퍼 */
-  const createValidatedNextHandler = useCallback(
-    (validationFields?: any[], trigger?: any) => {
-      return async () => {
-        if (validationFields && trigger) {
-          const isValid = await trigger(validationFields);
-          if (!isValid) return;
-        }
-        goNextStep();
-      };
-    },
-    [goNextStep]
+const Submit = ({ onClick, disabled, label = "제출" }: FunnelButtonProps) => {
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={onClick}
+      disabled={disabled}
+      type="submit"
+    >
+      {label}
+    </Button>
   );
-
-  const FunnelElement = useMemo(
-    () =>
-      Object.assign(
-        (props: Omit<FunnelProps<T>, "step">) => {
-          return <Funnel step={step} {...props} />;
-        },
-        {
-          Step: (props: StepProps<T>) => <Step<T> {...props} />,
-          Navigation: (props: NavigationProps) => <Navigation {...props} />,
-          Prev: (props: ButtonProps) => <Prev {...props} />,
-          Next: (props: ButtonProps) => <Next {...props} />,
-          Skip: (props: ButtonProps) => <Skip {...props} />,
-          Submit: (props: ButtonProps) => <Submit {...props} />,
-        }
-      ),
-    [step]
-  );
-
-  return {
-    FunnelElement,
-    goNextStep,
-    goPrevStep,
-    getCurrentStepIndex,
-    getValidSteps,
-    isFirstStep,
-    isLastStep,
-    createValidatedNextHandler,
-  };
 };
 
-export default Funnel;
+const FunnelComponent = Object.assign(Funnel, {
+  Provider: FunnelProvider,
+  Step,
+  Navigation,
+  Prev,
+  Next,
+  Skip,
+  Submit,
+});
+
+export { FunnelComponent as Funnel };

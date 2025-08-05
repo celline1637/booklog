@@ -8,7 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { READ_STATUS } from "@/config/read-status";
+import { Funnel } from "@/shared/components/form/funnel";
 import ReviewFunnel from "./review-funnel";
+
+const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
 
 const ReviewPage = () => {
   const methods = useForm({
@@ -47,7 +50,9 @@ const ReviewPage = () => {
       />
 
       <FormProvider methods={methods} onSubmit={onSubmit}>
-        <ReviewFunnel />
+        <Funnel.Provider steps={STEPS} initialStep="기본정보">
+          <ReviewFunnel />
+        </Funnel.Provider>
       </FormProvider>
     </BookLayout>
   );
