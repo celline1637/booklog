@@ -5,7 +5,7 @@ import { Controller, useFormContext } from "react-hook-form";
 
 import BookSelectAutocomplete from "@/components/review/book-select-autocomplete";
 import { READ_STATUS } from "@/config/read-status";
-import { type InferredBookReviewSchema } from "@/schema/review-schema";
+import { type BookReviewFormValues } from "@/schema/review-schema";
 import { RHFDateTimePicker } from "@/shared/components/form/rhf-date-picker.client";
 import { RHFSelect } from "@/shared/components/form/rhf-select";
 import { typedEntries } from "@/shared/utils/type";
@@ -15,7 +15,7 @@ import { Card, Stack, Typography } from "@mui/material";
 
 const BookStep1 = () => {
   const { control, getValues, setValue, clearErrors } =
-    useFormContext<InferredBookReviewSchema>();
+    useFormContext<BookReviewFormValues>();
 
   /** 독서 상태에 따라 독서 기간을 초기화합니다. */
   const handleInitDateOnStatusChange = (status: ReadStatus) => {
@@ -41,19 +41,9 @@ const BookStep1 = () => {
       }
 
       setValue("selectedBook", book);
-      setValue("title", book.title);
-      setValue("author", book.author);
-      setValue("publishDate", new Date(book.publishedAt));
-      setValue("totalPageCount", book.totalPages);
 
       // 에러 클리어
-      clearErrors([
-        "selectedBook",
-        "title",
-        "author",
-        "publishDate",
-        "totalPageCount",
-      ]);
+      clearErrors(["selectedBook"]);
     },
     [setValue, clearErrors]
   );

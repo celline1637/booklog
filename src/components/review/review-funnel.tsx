@@ -9,7 +9,7 @@ import BookStep1 from "@/components/review/step1-form";
 import BookStep2 from "@/components/review/step2-form";
 import BookStep3 from "@/components/review/step3-form";
 import { LinearStepper } from "@/components/review/stepper";
-import { type InferredBookReviewSchema } from "@/schema/review-schema";
+import { type BookReviewFormValues } from "@/schema/review-schema";
 import { useFunnel } from "@/shared/components/form/funnel";
 import BookStep4 from "./step4-form";
 import BookStep5 from "./step5-form";
@@ -17,10 +17,9 @@ import BookStep5 from "./step5-form";
 const STEPS = ["기본정보", "평가", "독후감", "인용구", "공개 여부"] as const;
 
 const ReviewFunnel = () => {
-  const { trigger, control } = useFormContext<InferredBookReviewSchema>();
+  const { trigger } = useFormContext<BookReviewFormValues>();
 
   const 별점 = useWatch({
-    control,
     name: "rating",
   });
 
@@ -36,17 +35,10 @@ const ReviewFunnel = () => {
     createValidatedNextHandler,
   } = useFunnel(STEPS, "기본정보");
 
-  const validateFields: Record<string, (keyof InferredBookReviewSchema)[]> =
+  const validateFields: Record<string, (keyof BookReviewFormValues)[]> =
     useMemo(
       () => ({
-        기본정보: [
-          "title",
-          "status",
-          "publishDate",
-          "startDate",
-          "endDate",
-          "selectedBook",
-        ],
+        기본정보: ["selectedBook", "status", "startDate", "endDate"],
         평가: ["rating"],
         독후감: 독후감필수 ? ["review"] : [],
         인용구: ["quotes"],

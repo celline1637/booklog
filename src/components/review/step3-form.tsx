@@ -1,8 +1,7 @@
 "use client";
 
-import { useFormContext, useWatch } from "react-hook-form";
+import { useWatch } from "react-hook-form";
 
-import { type InferredBookReviewSchema } from "@/schema/review-schema";
 import RHFTextField from "@/shared/components/form/rhf-text-field";
 import { Card, Stack, Typography } from "@mui/material";
 import { useMemo } from "react";
@@ -10,17 +9,13 @@ import { useMemo } from "react";
 const MIN_LENGTH = 100;
 
 const BookStep3 = () => {
-  const { control } = useFormContext<InferredBookReviewSchema>();
-
   // 별점 값을 감시
   const rating = useWatch({
-    control,
     name: "rating",
   });
 
   // 독후감 값을 감시 (글자수 체크용)
   const review = useWatch({
-    control,
     name: "review",
   });
 

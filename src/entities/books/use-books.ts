@@ -1,5 +1,5 @@
 import { booksApi } from "@/entities/books/api";
-import { QUERY_KEY } from "@/entities/reviews/key";
+import { QUERY_KEY } from "@/entities/books/key";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
 // ----------------------------------------------------------------------
